@@ -39,7 +39,10 @@ export default function RelatedSection({ category, id }) {
                                         {author.firstName.toUpperCase()} {author.middleName.toUpperCase()} {author.lastName.toUpperCase()} { }
                                         <span className="text-[#9B9B9B]">IN { }</span> {category.name.toUpperCase()}
                                     </p>
-                                    <div className='md:h-[138px] font-semibold text-[#111210] text-lg md:text-4xl md:leading-[46px] md:tracking-[-0.175px]'>{item.title}</div>
+                                    <Link href={{
+                                        pathname: '/[slug]',
+                                        query: { slug: item.slug },
+                                    }} replace={false} className='md:h-[138px] font-semibold text-[#111210] text-lg md:text-4xl md:leading-[46px] md:tracking-[-0.175px]'>{item.title}</Link>
                                 </div>
                                 <div className='flex font-normal text-[#9B9B9B] md:leading-[32px] md:tracking-[-0.1px]'>{item.summary}</div>
                             </div>
