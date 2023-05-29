@@ -20,7 +20,7 @@ export default function RelatedList({ articles }) {
                                 </Link>
                                 <div className="font-normal text-sm md:text-base text-[#9B9B9B] md:leading-[32px] md:tracking-[-0.1px]">{item.summary}</div>
                             </div>
-                            <div className='relative w-full h-[227.09px] md:w-[636px] md:h-[358px] order-first md:order-last'>
+                            <div className='relative w-full h-[227.09px] md:w-[584px] md:h-[358px] order-first md:order-last'>
                                 <Image src={item.thumbnail} fill={true} alt={item.title} className='rounded-[8px_8px_0px_0px] md:rounded-[0px_8px_8px_0px]' />
                             </div>
                         </div>
