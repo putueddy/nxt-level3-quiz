@@ -17,6 +17,7 @@ export default function Home({ meta, data }) {
     const [metadata, setMetadata] = useState(meta)
     const { pagination } = metadata
     const { page, totalPages } = pagination
+    const [isLoading, setIsLoading] = useState(false)
     const [more, setMore] = useState(page)
 
     useEffect(() => {
@@ -30,14 +31,17 @@ export default function Home({ meta, data }) {
     }, [sorting])
 
     const handleMore = async () => {
+        setIsLoading((state) => state = true)
         const nextPage = more + 1
         const queryString = sorting != '' ? `sort=${sorting}` : 'sort=new'
-        setMore((prevPage) => prevPage = nextPage)
         fetch(`https://hsi-sandbox.vercel.app/api/articles?${queryString}&page=${nextPage}`)
             .then((res) => res.json())
             .then(({ meta, data }) => {
                 setArticles((prev) => [...prev, ...data])
                 setMetadata((last) => last = meta)
+                setMore((prevPage) => prevPage = nextPage)
+            }).finally(() => {
+                setIsLoading((state) => state = false)
             })
     }
 
@@ -61,7 +65,7 @@ export default function Home({ meta, data }) {
 
                 {/* Load more articles */}
                 <div className='flex flex-col items-center'>
-                    {more < totalPages && <button className="w-[140px] h-[50px] md:w-[204px] md:h-[70px] border-2 border-[#FF5480] rounded-full text-lg md:text-2xl text-[#FF5480]" onClick={handleMore}>Load More</button>}
+                    {more < totalPages && <button className="w-[140px] h-[50px] md:w-[204px] md:h-[70px] border-2 border-[#FF5480] rounded-full text-lg md:text-2xl text-[#FF5480]" onClick={handleMore}>{isLoading ? "Loading..." : "Load More"}</button>}
                 </div>
 
             </section >

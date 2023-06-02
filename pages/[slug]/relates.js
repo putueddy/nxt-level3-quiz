@@ -11,15 +11,19 @@ export default function Relates({ data, repo }) {
     const { pagination } = metadata
     const { page, totalPages } = pagination
     const [more, setMore] = useState(page)
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleMore = async () => {
+        setIsLoading((state) => state = true)
         const nextPage = more + 1
-        setMore((prevPage) => prevPage = nextPage)
         fetch(`https://hsi-sandbox.vercel.app/api/articles?categoryId=${data.category.id}&excludedArticleId=${data.id}&page=${nextPage}`)
             .then((res) => res.json())
             .then(({ meta, data }) => {
                 setArticles((prev) => [...prev, ...data])
                 setMetadata((last) => last = meta)
+                setMore((prevPage) => prevPage = nextPage)
+            }).finally(() => {
+                setIsLoading((state) => state = false)
             })
     }
 
@@ -58,7 +62,7 @@ export default function Relates({ data, repo }) {
 
                 {/* Load more articles */}
                 <div className='flex flex-col items-center mb-10 md:mb-20'>
-                    {more < totalPages && <button className="w-[140px] h-[50px] md:w-[204px] md:h-[70px] border-2 border-[#FF5480] rounded-full text-lg md:text-2xl text-[#FF5480]" onClick={handleMore}>Load More</button>}
+                    {more < totalPages && <button className="w-[140px] h-[50px] md:w-[204px] md:h-[70px] border-2 border-[#FF5480] rounded-full text-lg md:text-2xl text-[#FF5480]" onClick={handleMore}>{isLoading ? "Loading..." : "Load More"}</button>}
                 </div>
             </article>
         </div >
