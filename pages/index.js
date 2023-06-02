@@ -52,8 +52,8 @@ export default function Home({ meta, data }) {
                 <nav className='grid grid-cols-8 place-items-center mb-5 md:mb-[100px]'>
                     <div className='w-20 md:w-40 col-start-1 col-end-2 place-self-start order-last md:order-first'>
                         <div className='flex flex-col md:flex-row py-5'>
-                            <Button sorting={sorting} title='Popular' setSorting={setSorting} />
-                            <Button sorting={sorting} title='New' setSorting={setSorting} />
+                            <Button sorting={sorting} title='Popular' setSorting={setSorting} setMore={setMore} />
+                            <Button sorting={sorting} title='New' setSorting={setSorting} setMore={setMore} />
                         </div>
                     </div>
                     <Image className="col-start-2 col-end-8 place-self-auto" src={logoBahram}
