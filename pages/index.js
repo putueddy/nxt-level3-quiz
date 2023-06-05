@@ -4,6 +4,7 @@ import Image from 'next/image'
 import logoBahram from '@/public/logo_bahram.png'
 import Button from '@/components/Button'
 import PostList from '@/components/PostList'
+import { useRouter } from 'next/router'
 
 const openSans = Open_Sans({
     weight: ['400', '600', '700'],
@@ -12,7 +13,6 @@ const openSans = Open_Sans({
 })
 
 export default function Home({ meta, data }) {
-    const [sorting, setSorting] = useState('')
     const [articles, setArticles] = useState(data)
     const [metadata, setMetadata] = useState(meta)
     const { pagination } = metadata
@@ -20,28 +20,30 @@ export default function Home({ meta, data }) {
     const [isLoading, setIsLoading] = useState(false)
     const [more, setMore] = useState(page)
 
+    const router = useRouter()
+
     useEffect(() => {
-        const queryString = sorting != '' ? `sort=${sorting}` : 'sort=new'
+        const queryString = router.query.sort ? `sort=${router.query.sort}` : 'sort=new'
         fetch(`https://hsi-sandbox.vercel.app/api/articles?${queryString}`)
             .then((res) => res.json())
             .then(({ meta, data }) => {
                 setArticles(data)
                 setMetadata(meta)
             })
-    }, [sorting])
+    }, [router.query.sort])
 
     const handleMore = async () => {
-        setIsLoading((state) => state = true)
+        setIsLoading(true)
         const nextPage = more + 1
-        const queryString = sorting != '' ? `sort=${sorting}` : 'sort=new'
+        const queryString = router.query.sort ? `sort=${router.query.sort}` : 'sort=new'
         fetch(`https://hsi-sandbox.vercel.app/api/articles?${queryString}&page=${nextPage}`)
             .then((res) => res.json())
             .then(({ meta, data }) => {
                 setArticles((prev) => [...prev, ...data])
-                setMetadata((last) => last = meta)
-                setMore((prevPage) => prevPage = nextPage)
+                setMetadata(meta)
+                setMore(nextPage)
             }).finally(() => {
-                setIsLoading((state) => state = false)
+                setIsLoading(false)
             })
     }
 
@@ -52,8 +54,8 @@ export default function Home({ meta, data }) {
                 <nav className='grid grid-cols-8 place-items-center mb-5 md:mb-[100px]'>
                     <div className='w-20 md:w-40 col-start-1 col-end-2 place-self-start order-last md:order-first'>
                         <div className='flex flex-col md:flex-row py-5'>
-                            <Button sorting={sorting} title='Popular' setSorting={setSorting} setMore={setMore} />
-                            <Button sorting={sorting} title='New' setSorting={setSorting} setMore={setMore} />
+                            <Button sorting={router.query.sort} title='Popular' setMore={setMore} />
+                            <Button sorting={router.query.sort} title='New' setMore={setMore} />
                         </div>
                     </div>
                     <Image className="col-start-2 col-end-8 place-self-auto" src={logoBahram}
@@ -61,7 +63,7 @@ export default function Home({ meta, data }) {
                 </nav>
 
                 {/* Articles */}
-                <PostList className="max-w-[972px] flex flex-col" articles={articles} sorting={sorting} />
+                <PostList className="max-w-[972px] flex flex-col" articles={articles} sorting={router.query.sort} />
 
                 {/* Load more articles */}
                 <div className='flex flex-col items-center'>
@@ -77,13 +79,11 @@ export async function getServerSideProps(context) {
     const { query } = context
     const { sort } = query
     const queryString = sort ? `sort=${sort}` : 'sort=new'
+    console.log(queryString)
     const res = await fetch(`https://hsi-sandbox.vercel.app/api/articles?${queryString}`)
     const repo = await res.json()
     const { meta, data } = repo
     return {
-        props: {
-            meta: meta,
-            data: data
-        }
+        props: { meta, data }
     }
 }

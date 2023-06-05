@@ -80,9 +80,6 @@ export async function getServerSideProps(context) {
     const repo = await res2.json()
 
     return {
-        props: {
-            data: data,
-            repo: repo
-        }
+        props: { data, repo }
     }
 }

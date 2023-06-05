@@ -12,10 +12,9 @@ export default function RelatedList({ articles }) {
                         <div key={item.id} className="max-w-sm md:max-w-6xl flex flex-col md:flex-row rounded-lg" style={{ boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.0835598)" }}>
                             <div className="md:w-[584px] py-5 px-4 md:py-10 md:px-14">
                                 <div className="font-normal text-sm md:text-2xl md:leading-[58px] md:tracking-[-0.15px]">{zeroPad(index + 1, 2)}</div>
-                                <Link href={{
-                                    pathname: '/[slug]',
-                                    query: { slug: item.slug },
-                                }} replace={true} className="h-[129px] font-semibold text-sm md:text-2xl text-[#111210] md:text-[28px] md:leading-[46px] md:tracking-[-0.175px]" >
+                                <Link href={`/${item.slug}`}
+                                    replace={true}
+                                    className="h-[129px] font-semibold text-sm md:text-2xl text-[#111210] md:text-[28px] md:leading-[46px] md:tracking-[-0.175px]" >
                                     {item.title}
                                 </Link>
                                 <div className="font-normal text-sm md:text-base text-[#9B9B9B] md:leading-[32px] md:tracking-[-0.1px]">{item.summary}</div>

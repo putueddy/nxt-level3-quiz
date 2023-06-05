@@ -16,10 +16,11 @@ export default function PostList({ articles, sorting }) {
                                 {author.firstName.toUpperCase()} {author.middleName.toUpperCase()} {author.lastName.toUpperCase()} { }
                                 <span className="text-[#9B9B9B]">IN { }</span>
                                 {category.name.toUpperCase()}</p>
-                            <Link href={{
-                                pathname: '/[slug]',
-                                query: { slug: item.slug },
-                            }} replace={false} className="text-2xl md:text-5xl md:leading-[61px] md:tracking-[-0.3px]"><strong>{item.title}</strong></Link>
+                            <Link href={`/${item.slug}`}
+                                replace={false}
+                                className="text-2xl md:text-5xl md:leading-[61px] md:tracking-[-0.3px]">
+                                <strong>{item.title}</strong>
+                            </Link>
                         </div>
                     )
                 })
