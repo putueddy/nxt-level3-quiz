@@ -45,7 +45,7 @@ export default function Page({ repo }) {
 }
 
 export const getStaticPaths = async () => {
-    const res = await fetch(`https://hsi-sandbox.vercel.app/api/articles?perPage=12`)
+    const res = await fetch(`https://hsi-sandbox.vercel.app/api/articles?perPage=99`)
     const repo = await res.json()
     const paths = repo.data.map((article) => {
         return {
