@@ -12,39 +12,16 @@ const openSans = Open_Sans({
     subsets: ['latin'],
 })
 
-export default function Home({ meta, data }) {
-    const [articles, setArticles] = useState(data)
-    const [metadata, setMetadata] = useState(meta)
-    const { pagination } = metadata
-    const { page, totalPages } = pagination
-    const [isLoading, setIsLoading] = useState(false)
-    const [more, setMore] = useState(page)
+export default function Home({ meta }) {
+
+    const [pageIndex, setPageIndex] = useState(1)
 
     const router = useRouter()
 
-    useEffect(() => {
-        const queryString = router.query.sort ? `sort=${router.query.sort}` : 'sort=new'
-        fetch(`https://hsi-sandbox.vercel.app/api/articles?${queryString}`)
-            .then((res) => res.json())
-            .then(({ meta, data }) => {
-                setArticles(data)
-                setMetadata(meta)
-            })
-    }, [router.query.sort])
+    const pages = []
 
-    const handleMore = async () => {
-        setIsLoading(true)
-        const nextPage = more + 1
-        const queryString = router.query.sort ? `sort=${router.query.sort}` : 'sort=new'
-        fetch(`https://hsi-sandbox.vercel.app/api/articles?${queryString}&page=${nextPage}`)
-            .then((res) => res.json())
-            .then(({ meta, data }) => {
-                setArticles((prev) => [...prev, ...data])
-                setMetadata(meta)
-                setMore(nextPage)
-            }).finally(() => {
-                setIsLoading(false)
-            })
+    for (let i = 1; i <= pageIndex; i++) {
+        pages.push(<PostList page={i} key={i} />)
     }
 
     return (
@@ -54,8 +31,8 @@ export default function Home({ meta, data }) {
                 <nav className='grid grid-cols-8 place-items-center mb-5 md:mb-[100px]'>
                     <div className='w-20 md:w-40 col-start-1 col-end-2 place-self-start order-last md:order-first'>
                         <div className='flex flex-col md:flex-row py-5'>
-                            <Button sorting={router.query.sort} title='Popular' setMore={setMore} />
-                            <Button sorting={router.query.sort} title='New' setMore={setMore} />
+                            <Button sorting={router.query.sort} title='Popular' setPageIndex={setPageIndex} />
+                            <Button sorting={router.query.sort} title='New' setPageIndex={setPageIndex} />
                         </div>
                     </div>
                     <Image className="col-start-2 col-end-8 place-self-auto" src={logoBahram}
@@ -63,11 +40,15 @@ export default function Home({ meta, data }) {
                 </nav>
 
                 {/* Articles */}
-                <PostList className="max-w-[972px] flex flex-col" articles={articles} sorting={router.query.sort} />
+                <div className="flex flex-col items-center">
+                    {pages}
+                </div>
 
                 {/* Load more articles */}
                 <div className='flex flex-col items-center'>
-                    {more < totalPages && <button className="w-[140px] h-[50px] md:w-[204px] md:h-[70px] border-2 border-[#FF5480] rounded-full text-lg md:text-2xl text-[#FF5480]" onClick={handleMore}>{isLoading ? "Loading..." : "Load More"}</button>}
+                    {pageIndex < meta.pagination.totalPages && <button
+                        className="w-[140px] h-[50px] md:w-[204px] md:h-[70px] border-2 border-[#FF5480] rounded-full text-lg md:text-2xl text-[#FF5480]"
+                        onClick={() => setPageIndex(pageIndex + 1)}>Load More</button>}
                 </div>
 
             </section >
@@ -79,11 +60,11 @@ export async function getServerSideProps(context) {
     const { query } = context
     const { sort } = query
     const queryString = sort ? `sort=${sort}` : 'sort=new'
-    console.log(queryString)
+
     const res = await fetch(`https://hsi-sandbox.vercel.app/api/articles?${queryString}`)
     const repo = await res.json()
-    const { meta, data } = repo
+    const { meta } = repo
     return {
-        props: { meta, data }
+        props: { meta }
     }
 }
