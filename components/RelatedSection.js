@@ -19,10 +19,7 @@ export default function RelatedSection({ category, id }) {
             <div className='flex justify-between mb-7 md:mb-14'>
                 <div className='font-semibold text-[#111210] text-xl md:text-4xl md:leading-[58px] md:tracking-[-0.225px]'>You might also like</div>
                 <div className='font-normal text-[#9B9B9B] md:leading-[58px] md:tracking-[-0.1px]'>
-                    <Link href={{
-                        pathname: '/[slug]/relates',
-                        query: { slug: router.query.slug },
-                    }} replace={true}>More</Link>
+                    <Link href={`/${router.query.slug}/relates`} replace={true}>More</Link>
                 </div>
             </div>
             {/* Related articles */}
